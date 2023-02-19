@@ -23,10 +23,7 @@
     "vite": "^4.1.0"
   },
   "main": "vite.config.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/govindjoshi9/airbnb_clone.git"
-  },
+  
   "author": "govind",
   "license": "ISC",
   "bugs": {
