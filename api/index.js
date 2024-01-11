@@ -28,22 +28,53 @@ async function connectToDatabase() {
   }
 }
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.json("test ok");
 });
 
 // Regiter api
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
+  try {
+   
+    const userDoc = await User.create({
+      name,
+      email,
+      password: bcrypt.hashSync(password, bcryptSalt),
+    })
+    
+    res.json(userDoc)
+  }
+  catch (e) {
+    res.status(422).json(e);
+  }
  
-  const userDoc = await User.create({
-    name,
-    email,
-    password: bcrypt.hashSync(password, bcryptSalt),
-  })
-  res.json(userDoc)
-
 });
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const UserDoc = await User.findOne({ email });
+  if (UserDoc) {
+    const passok = bcrypt.compareSync(password, UserDoc.password);
+    if (passok) {
+       jwt.sign(
+         { userId: UserDoc._id, email },
+         jwtSecret,
+         {},
+         (err, token) => {
+           res.cookie("token", token).json({
+             id: UserDoc._id,
+           });
+         }
+       );
+    }
+    else {
+      res.json("pass not ok")
+    }
+  } else {
+    res.json('not found');
+  }
+})
 
 connectToDatabase().then(() => {
   const server = app.listen(PORT, () => {

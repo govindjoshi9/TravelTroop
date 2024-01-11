@@ -7,11 +7,18 @@ export default function RegisterPage() {
     const[password, setpassword] = useState('');
   function registerUser(ev){
     ev.preventDefault();
-    axios.post("http://localhost:8080/register", {
-      name,
-      email,
-      password,
-    });
+    try {
+      axios.post("http://localhost:8080/register", {
+        name,
+        email,
+        password,
+      });
+      alert('Registration successfull. Now you can log in');
+    }
+    catch (e) {
+      alert('Registration faild. Pleas try  again later');
+      
+    }
   }
 
   return (
