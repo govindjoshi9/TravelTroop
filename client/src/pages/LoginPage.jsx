@@ -1,17 +1,32 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 export default function loginPage() {
   const [password, setpassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setemail] = useState("");
+  const [redirect, setRedirect] = useState(false);
+ const {setuser} = useContext(UserContext );
   async function handleLoginSubmit(ev) {
     ev.preventDefault();
     try {
-      await axios.post("/login", { email, password });
-      alert("login successfull");
+      const {data} =await axios.post("/login", {
+        email,
+        password,
+      });
+      setuser(data)
+      alert('login done')
+      setRedirect(true);
     } catch (e) {
       alert("login faild");
     }
   }
+
+  if (redirect) {
+    return <Navigate to={'/'}/>
+  }
+
+
   return (
     <div className="mt-4 grow flex item-center justify-around">
       <div className="mb-64">
@@ -21,13 +36,13 @@ export default function loginPage() {
             type="email"
             placeholder="Your@email.com"
             value={email}
-            onChange={(ev) => setEmail(ev.target.value)}
+            onChange={ev => setemail(ev.target.value)}
           />
           <input
             type="password"
             placeholder="password"
             value={password}
-            onChange={(ev) => setpassword(ev.target.value)}
+            onChange={ev => setpassword(ev.target.value)}
           />
           <button className="primary">Login</button>
           <div className="text-center py-2 text-gray-500">
