@@ -90,6 +90,10 @@ app.get('/profile', (req, res) => {
   // res.json('user info')
 })
 
+app.post('/logout', (req, res) => {
+  res.cookie('token', '').json(true);
+})
+
 
 connectToDatabase().then(() => {
   const server = app.listen(PORT, () => {
