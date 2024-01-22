@@ -6,7 +6,7 @@ const User = require("./models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
-
+const imagedownloader = require('image-downloader')
 app.use(cookieParser());
 app.use(express.json())
 const PORT = process.env.PORT || 8080;
@@ -92,6 +92,21 @@ app.get('/profile', (req, res) => {
 
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json(true);
+})
+
+app.post('/upload-by-link',async (req,res)=>{
+      const {link} = req.body;
+      const newName =  'photo'+Date.now() + ".jpg";
+      try{
+        await imagedownloader.image({
+        url:link,
+        dest: __dirname +'/uploads' +newName,
+      })
+    }
+    catch (e){
+      res.json(e);
+    }
+      res.json(__dirname+ '/uploads' + newName);
 })
 
 

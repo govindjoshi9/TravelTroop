@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Parks from "./Parks";
+import axios from 'axios';
 export default function Places() {
   const { action } = useParams();
   const [title, setTitle] = useState("");
@@ -11,7 +12,7 @@ export default function Places() {
   const [parks, setParks] = useState([]);
   const [extraInfo, setExtraInfo] = useState("");
   const [checkIn, setCheckIn] = useState("");
-  const [checkOut, ssetCheckOut] = useState("");
+  const [checkOut, setCheckOut] = useState("");
   const [maxGuest, setMaxGuest] = useState(1);
 
   function Inputheader(text) {
@@ -27,6 +28,14 @@ export default function Places() {
         {inputDescription(description)}
       </>
     );
+  }
+  async function addPhotobyLink(ev){
+    ev.preventDefault();
+    const {data: filename}  = await axios.post('/upload-by-link', {link:phtoLink})
+    setAddedPhotos(prev =>{
+      return [...prev, filename]
+    })
+    setPhotoLink('');
   }
 
   return (
@@ -65,14 +74,14 @@ export default function Places() {
             <input
               type="text"
               value={title}
-              onchange={(ev) => setTitle(ev.target.value)}
+              onChange={(ev) => setTitle(ev.target.value)}
               placeholder="title, for example: My lovely apertment"
             />
             {preInput("Address", "Address to this place")}
             <input
               type="text"
               value={address}
-              onchange={(ev) => setAddress(ev.target.value)}
+              onChange={(ev) => setAddress(ev.target.value)}
               placeholder="Address"
             />
             {preInput("Photo", "more = better")}
@@ -80,14 +89,19 @@ export default function Places() {
               <input
                 type="text"
                 value={phtoLink}
-                onchange={(ev) => setPhotoLink(ev.target.value)}
+                onChange={(ev) => setPhotoLink(ev.target.value)}
                 placeholder={"Add using a link .....jpg"}
               />
-              <button className="bg-gray-200 px-4 rounded-2xl">
+              <button onClick={addPhotobyLink} className="bg-gray-200 px-4 rounded-2xl">
                 Add Photo
               </button>
             </div>
             <div className="mt-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {addedPhotos.length> 0 && addedPhotos.map(link=>(
+                <div>
+                  {link}
+                </div>
+              ))}
               <button className=" flex justify-center gap-1 border bg-transparent rounded-2xl p-8 text-2xl text-gray-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -107,16 +121,16 @@ export default function Places() {
               </button>
             </div>
             {preInput("Description", "description of the place")}
-            <textarea />
+            <textarea value={discription} onChange={ev=>setDescription(ev.target.value)}/>
             {preInput("Perks", "select all the parks of your place")}
             <div className="grid gap-2 mt-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
               <Parks
-                // selected={parks}
-                // onchange={setParks()}
+                selected={parks}
+                onChange={setParks}
               />
             </div>
             {preInput("Extra Info", "house rules, etc")}
-            <textarea />
+            <textarea value={extraInfo} onChange={ev=>setExtraInfo(ev.target.value)}/>
             {preInput(
               "Check in&out times",
               "check in and out times, remeber to have some time window for cleaning the room betwwn guests"
@@ -124,15 +138,15 @@ export default function Places() {
             <div className="grid gap-2 sm:grid-cols-3">
               <div className="mt-2 -mb-1">
                 <h3>ChecK in time</h3>
-                <input type="text" placeholder="14:00" />
+                <input type="text" value={checkIn} onChange={ev=> setCheckIn(ev.target.value)} placeholder="14:00" />
               </div>
               <div className="mt-2 -mb-1">
                 <h3>Check out time</h3>
-                <input type="text" />
+                <input type="text" value={checkOut} onChange={ev=>setCheckOut(ev=>setCheckOut(ev.target.value))}/>
               </div>
               <div className="mt-2 -mb-1">
                 <h3>Max number of guests</h3>
-                <input type="text" />
+                <input type="number" value={maxGuest} onChange={ev=>setMaxGuest(ev.target.value)}/>
               </div>
             </div>
             <button className="primary my-4">Save</button>
