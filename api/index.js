@@ -6,9 +6,13 @@ const User = require("./models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
-const imagedownloader = require('image-downloader')
+const imagedownloader = require('image-downloader');
+const multer =  require('multer');
+const fs =  require('fs');
+
 app.use(cookieParser());
 app.use(express.json())
+app.use("/uploads",express.static(__dirname+ '/uploads'));
 const PORT = process.env.PORT || 8080;
 app.use(
   cors({
@@ -107,6 +111,21 @@ app.post('/upload-by-link',async (req,res)=>{
       res.json(e);
     }
       res.json(__dirname+ '/uploads' + newName);
+})
+
+const photosMiddleware = multer({dest:'uploads'});
+app.post('/upload', photosMiddleware.array('photos', 100),(req, res)=>{
+  const uploadFiles =  [];
+  for(let i=0 ; i<req.files.length; i++){
+    const {path, originalname} =  req.files[i];
+    const parts = originalname.split('.');
+    const ext = parts[parts.length -1];
+    const newPath = path + '.' + ext;
+    fs.renameSync(path, newPath)
+    uploadFiles.push(newPath.replace('uploads/',''));
+  }
+      res.json(req.files);
+
 })
 
 

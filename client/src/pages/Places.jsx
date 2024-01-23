@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Parks from "./Parks";
 import axios from 'axios';
+import PhotosUploads from "./PhotosUploads";
 export default function Places() {
   const { action } = useParams();
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
-  const [phtoLink, setPhotoLink] = useState("");
   const [discription, setDescription] = useState("");
   const [parks, setParks] = useState([]);
   const [extraInfo, setExtraInfo] = useState("");
@@ -29,14 +29,7 @@ export default function Places() {
       </>
     );
   }
-  async function addPhotobyLink(ev){
-    ev.preventDefault();
-    const {data: filename}  = await axios.post('/upload-by-link', {link:phtoLink})
-    setAddedPhotos(prev =>{
-      return [...prev, filename]
-    })
-    setPhotoLink('');
-  }
+  
 
   return (
     <div>
@@ -85,41 +78,9 @@ export default function Places() {
               placeholder="Address"
             />
             {preInput("Photo", "more = better")}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={phtoLink}
-                onChange={(ev) => setPhotoLink(ev.target.value)}
-                placeholder={"Add using a link .....jpg"}
-              />
-              <button onClick={addPhotobyLink} className="bg-gray-200 px-4 rounded-2xl">
-                Add Photo
-              </button>
-            </div>
-            <div className="mt-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-              {addedPhotos.length> 0 && addedPhotos.map(link=>(
-                <div>
-                  {link}
-                </div>
-              ))}
-              <button className=" flex justify-center gap-1 border bg-transparent rounded-2xl p-8 text-2xl text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9.75v6.75m0 0-3-3m3 3 3-3m-8.25 6a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
-                  />
-                </svg>
-                Upload
-              </button>
-            </div>
+            
+              <PhotosUploads addedPhotos={addedPhotos} onChange={setAddedPhotos}/>
+
             {preInput("Description", "description of the place")}
             <textarea value={discription} onChange={ev=>setDescription(ev.target.value)}/>
             {preInput("Perks", "select all the parks of your place")}
