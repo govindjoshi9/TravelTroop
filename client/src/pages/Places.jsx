@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import Parks from "./Parks";
 import axios from 'axios';
 import PhotosUploads from "./PhotosUploads";
@@ -14,6 +14,7 @@ export default function Places() {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [maxGuest, setMaxGuest] = useState(1);
+  const [redirect, setRedirect] = useState("");
 
   function Inputheader(text) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
@@ -29,6 +30,17 @@ export default function Places() {
       </>
     );
   }
+
+  async function addNewPlace(ev){
+    ev.preventDefault();
+    const {data: responseData} = await axios.post("/places",{title, address, 
+      addedPhotos, discription, parks, 
+      extraInfo,checkIn, checkOut, maxGuest });
+        setRedirect('/account/places');
+  }
+if(redirect){
+  return <Navigate to={redirect}/>
+}
   
 
   return (
@@ -59,7 +71,7 @@ export default function Places() {
       )}
       {action === "new" && (
         <div>
-          <form>
+          <form onSubmit={addNewPlace}>
             {preInput(
               "Title",
               "title for your place should be short and catchy as a advistement"
@@ -103,7 +115,7 @@ export default function Places() {
               </div>
               <div className="mt-2 -mb-1">
                 <h3>Check out time</h3>
-                <input type="text" value={checkOut} onChange={ev=>setCheckOut(ev=>setCheckOut(ev.target.value))}/>
+                <input type="text" value={checkOut} onChange={ev=>setCheckOut(ev.target.value)}/>
               </div>
               <div className="mt-2 -mb-1">
                 <h3>Max number of guests</h3>

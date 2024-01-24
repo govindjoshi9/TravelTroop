@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
 const User = require("./models/User");
+const Place =  require("./models/Place");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
@@ -98,6 +99,8 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json(true);
 })
 
+console.log(__dirname);
+
 app.post('/upload-by-link',async (req,res)=>{
       const {link} = req.body;
       const newName =  'photo'+Date.now() + ".jpg";
@@ -110,7 +113,7 @@ app.post('/upload-by-link',async (req,res)=>{
     catch (e){
       res.json(e);
     }
-      res.json(__dirname+ '/uploads' + newName);
+      res.json(__dirname + "\\uploads" + newName);
 })
 
 const photosMiddleware = multer({dest:'uploads'});
@@ -127,6 +130,23 @@ app.post('/upload', photosMiddleware.array('photos', 100),(req, res)=>{
       res.json(req.files);
 
 })
+
+app.post('/places', (req, res)=>{
+  const { token } = req.cookies;
+  const { 
+    title, address, photo, description,
+    perks, extraInfo, checkIn, checkOut,maxGuest,
+  } = req.body; 
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+    if (err) throw err;
+   const PlaceDoc=  await Place.create({
+     owner: user.id,
+     title, address, photo, description,
+     perks, extraInfo, checkIn, checkOut,maxGuest,
+    });
+    res.json(PlaceDoc);
+  });
+});
 
 
 connectToDatabase().then(() => {
