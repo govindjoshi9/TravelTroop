@@ -13,7 +13,7 @@ const fs =  require('fs');
 
 app.use(cookieParser());
 app.use(express.json())
-app.use("/uploads",express.static(__dirname+ '/uploads'));
+app.use("/uploads",express.static(__dirname + '/uploads'));
 const PORT = process.env.PORT || 8080;
 app.use(
   cors({
@@ -99,21 +99,18 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json(true);
 })
 
-console.log(__dirname);
 
 app.post('/upload-by-link',async (req,res)=>{
       const {link} = req.body;
-      const newName =  'photo'+Date.now() + ".jpg";
-      try{
+      const newName =  'photo' + Date.now() + '.jpg';
+      
         await imagedownloader.image({
         url:link,
-        dest: __dirname +'/uploads' +newName,
+        dest: __dirname +'/uploads/' + newName,
       })
-    }
-    catch (e){
-      res.json(e);
-    }
-      res.json(__dirname + "\\uploads" + newName);
+    
+    
+      res.json(newName);
 })
 
 const photosMiddleware = multer({dest:'uploads'});
@@ -125,24 +122,24 @@ app.post('/upload', photosMiddleware.array('photos', 100),(req, res)=>{
     const ext = parts[parts.length -1];
     const newPath = path + '.' + ext;
     fs.renameSync(path, newPath)
-    uploadFiles.push(newPath.replace('uploads/',''));
+    uploadFiles.push(newPath.replace('uploads',''));
   }
-      res.json(req.files);
+      res.json(uploadFiles);
 
 })
 
 app.post('/places', (req, res)=>{
   const { token } = req.cookies;
   const { 
-    title, address, photo, description,
-    perks, extraInfo, checkIn, checkOut,maxGuest,
+    title, address, addedPhotos, description,
+    parks, extraInfo, checkIn, checkOut,maxGuest,
   } = req.body; 
   jwt.verify(token, jwtSecret, {}, async (err, user) => {
     if (err) throw err;
    const PlaceDoc=  await Place.create({
      owner: user.id,
-     title, address, photo, description,
-     perks, extraInfo, checkIn, checkOut,maxGuest,
+     title, address, addedPhotos, description,
+     parks, extraInfo, checkIn, checkOut,maxGuest,
     });
     res.json(PlaceDoc);
   });

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Parks({selected , onChange}) {
   function handleCbClick(ev){
-      const {checked, name } =  ev.name;
+    const {checked, name } =  ev.target;
      if(checked) {
        onChange([...selected, name])
 
@@ -35,7 +35,7 @@ export default function Parks({selected , onChange}) {
         <span>Wifi</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center  cursor-pointer">
-        <input type="checkbox" name='Free parking' onChange={ handleCbClick} />
+        <input type="checkbox" name='parking' onChange={ handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -108,7 +108,7 @@ export default function Parks({selected , onChange}) {
         <span>Pets</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name='Private entrance'  onChange={ handleCbClick}/>
+        <input type="checkbox" name='entrance'  onChange={ handleCbClick}/>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

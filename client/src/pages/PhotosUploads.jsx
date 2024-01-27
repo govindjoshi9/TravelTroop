@@ -21,7 +21,7 @@ export default function PhotosUploads({addedPhotos , onChange}) {
           data.append('photos',file[i]);
         }
         await axios.post('/upload', data,{
-          headers: {'Content-Type':'multipart/form-data'}
+          headers: {'Content-type':'multipart/form-data'}
         }).then(responce =>{
           const {data: filenames} = responce;
           onChange(prev =>{

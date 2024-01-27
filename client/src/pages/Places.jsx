@@ -33,12 +33,12 @@ export default function Places() {
 
   async function addNewPlace(ev){
     ev.preventDefault();
-    const {data: responseData} = await axios.post("/places",{title, address, 
+    const {data} = await axios.post("/places",{title, address, 
       addedPhotos, discription, parks, 
       extraInfo,checkIn, checkOut, maxGuest });
         setRedirect('/account/places');
   }
-if(redirect){
+if(redirect ){
   return <Navigate to={redirect}/>
 }
   
