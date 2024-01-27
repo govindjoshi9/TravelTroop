@@ -6,7 +6,7 @@ const placeSchema = new Schema({
   title: String,
   address: String,
   addedPhotos: [String],
-  description: String,
+  discription: String,
   parks: [String],
   extraInfo: String,
   checkIn: Number,

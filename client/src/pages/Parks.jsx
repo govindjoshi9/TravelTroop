@@ -3,7 +3,7 @@ import React from 'react'
 export default function Parks({selected , onChange}) {
   function handleCbClick(ev){
     const {checked, name } =  ev.target;
-     if(checked) {
+    if(checked) {
        onChange([...selected, name])
 
       }
@@ -16,7 +16,7 @@ export default function Parks({selected , onChange}) {
   return (
     <>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
-        <input type="checkbox" name='Wifi' onChange={handleCbClick} />
+        <input type="checkbox" checked={selected.includes('Wifi')} name='Wifi' onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -35,7 +35,7 @@ export default function Parks({selected , onChange}) {
         <span>Wifi</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center  cursor-pointer">
-        <input type="checkbox" name='parking' onChange={ handleCbClick} />
+        <input type="checkbox" checked={selected.includes('parking')} name='parking' onChange={ handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -53,7 +53,7 @@ export default function Parks({selected , onChange}) {
         <span>Free parking</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name='TV' onChange={ handleCbClick}/>
+        <input type="checkbox" checked={selected.includes('TV')} name='TV' onChange={ handleCbClick}/>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -71,7 +71,7 @@ export default function Parks({selected , onChange}) {
         <span>TV</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
-        <input type="checkbox" name='radio'  onChange={ handleCbClick} />
+        <input type="checkbox" checked={selected.includes('radio')} name='radio'  onChange={ handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -90,7 +90,7 @@ export default function Parks({selected , onChange}) {
         <span>radio</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
-        <input type="checkbox" name='Pets' onChange={ handleCbClick} />
+        <input type="checkbox" checked={selected.includes('Pets')} name='Pets' onChange={ handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -108,7 +108,7 @@ export default function Parks({selected , onChange}) {
         <span>Pets</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name='entrance'  onChange={ handleCbClick}/>
+        <input type="checkbox" checked={selected.includes('entrance')} name='entrance'  onChange={ handleCbClick}/>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

@@ -131,20 +131,55 @@ app.post('/upload', photosMiddleware.array('photos', 100),(req, res)=>{
 app.post('/places', (req, res)=>{
   const { token } = req.cookies;
   const { 
-    title, address, addedPhotos, description,
+    title, address, addedPhotos, discription,
     parks, extraInfo, checkIn, checkOut,maxGuest,
   } = req.body; 
   jwt.verify(token, jwtSecret, {}, async (err, user) => {
     if (err) throw err;
    const PlaceDoc=  await Place.create({
      owner: user.id,
-     title, address, addedPhotos, description,
+     title, address, addedPhotos, discription,
      parks, extraInfo, checkIn, checkOut,maxGuest,
     });
     res.json(PlaceDoc);
   });
 });
 
+app.get('/places',(req,res)=>{
+  const { token } = req.cookies;
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+  const {id} = user;
+    res.json(await Place.find({owner:id}));
+  });
+
+})
+
+app.get('/places/:id', async (req, res)=>{
+    const {id} = req.params;
+    res.json(await Place.findById(id))
+
+})
+
+app.put('/places', async (req,res)=>{
+  const { token } = req.cookies;
+  const {
+    id ,title, address, addedPhotos, discription,
+     parks, extraInfo, checkIn, checkOut,maxGuest,
+  } = req.body;
+
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+    const placeDoc =  await Place.findById(id); 
+    if(user.id === placeDoc.owner.toString()){
+      placeDoc.set({
+        title, address, addedPhotos, discription,
+     parks, extraInfo, checkIn, checkOut,maxGuest
+      });
+      await placeDoc.save();
+      res.json('ok');
+    }
+  
+  });
+});
 
 connectToDatabase().then(() => {
   const server = app.listen(PORT, () => {

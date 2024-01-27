@@ -1,51 +1,17 @@
-import React, { useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
-import Parks from "./Parks";
-import axios from 'axios';
-import PhotosUploads from "./PhotosUploads";
+import { useEffect, useState } from "react";
+import { Link,  } from "react-router-dom";
+import AccountNav from "./AccountNav";
+import axios from "axios";
 export default function Places() {
-  const { action } = useParams();
-  const [title, setTitle] = useState("");
-  const [address, setAddress] = useState("");
-  const [addedPhotos, setAddedPhotos] = useState([]);
-  const [discription, setDescription] = useState("");
-  const [parks, setParks] = useState([]);
-  const [extraInfo, setExtraInfo] = useState("");
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [maxGuest, setMaxGuest] = useState(1);
-  const [redirect, setRedirect] = useState("");
-
-  function Inputheader(text) {
-    return <h2 className="text-2xl mt-4">{text}</h2>;
-  }
-  function inputDescription(text) {
-    return <p className="text-gray-500 text-sm">{text}</p>;
-  }
-  function preInput(header, description) {
-    return (
-      <>
-        {Inputheader(header)}
-        {inputDescription(description)}
-      </>
-    );
-  }
-
-  async function addNewPlace(ev){
-    ev.preventDefault();
-    const {data} = await axios.post("/places",{title, address, 
-      addedPhotos, discription, parks, 
-      extraInfo,checkIn, checkOut, maxGuest });
-        setRedirect('/account/places');
-  }
-if(redirect ){
-  return <Navigate to={redirect}/>
-}
-  
-
+  const [places, setPlaces] = useState([])
+  useEffect(()=>{
+    axios.get('/places').then(({data})=>{
+        setPlaces(data)
+    })
+  },[])
   return (
     <div>
-      {action !== "new" && (
+      <AccountNav/>
         <div className="text-center">
           <Link
             className="inline-flex gap-1 bg-primary text-white py-2 px-6 rounded-full"
@@ -68,64 +34,23 @@ if(redirect ){
             Add new places
           </Link>
         </div>
-      )}
-      {action === "new" && (
-        <div>
-          <form onSubmit={addNewPlace}>
-            {preInput(
-              "Title",
-              "title for your place should be short and catchy as a advistement"
-            )}
-            <input
-              type="text"
-              value={title}
-              onChange={(ev) => setTitle(ev.target.value)}
-              placeholder="title, for example: My lovely apertment"
-            />
-            {preInput("Address", "Address to this place")}
-            <input
-              type="text"
-              value={address}
-              onChange={(ev) => setAddress(ev.target.value)}
-              placeholder="Address"
-            />
-            {preInput("Photo", "more = better")}
-            
-              <PhotosUploads addedPhotos={addedPhotos} onChange={setAddedPhotos}/>
-
-            {preInput("Description", "description of the place")}
-            <textarea value={discription} onChange={ev=>setDescription(ev.target.value)}/>
-            {preInput("Perks", "select all the parks of your place")}
-            <div className="grid gap-2 mt-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-              <Parks
-                selected={parks}
-                onChange={setParks}
-              />
-            </div>
-            {preInput("Extra Info", "house rules, etc")}
-            <textarea value={extraInfo} onChange={ev=>setExtraInfo(ev.target.value)}/>
-            {preInput(
-              "Check in&out times",
-              "check in and out times, remeber to have some time window for cleaning the room betwwn guests"
-            )}
-            <div className="grid gap-2 sm:grid-cols-3">
-              <div className="mt-2 -mb-1">
-                <h3>ChecK in time</h3>
-                <input type="text" value={checkIn} onChange={ev=> setCheckIn(ev.target.value)} placeholder="14:00" />
+        <div className="mt-4">
+          {places.length >0 && places.map(place =>(
+          <Link to={'/account/places/'+place._id}>
+            <div className=" flex gap-4 bg-gray-100 p-4 rounded-2xl" >
+              <div className="w-23 h-32 bg-gray-300 grow shrink-0">
+                {place.addedPhotos.length>0 && (
+                  <img src={'http://localhost:8080/uplaods/'+ place.addedPhotos[0]} alt="" />
+                )}
               </div>
-              <div className="mt-2 -mb-1">
-                <h3>Check out time</h3>
-                <input type="text" value={checkOut} onChange={ev=>setCheckOut(ev.target.value)}/>
-              </div>
-              <div className="mt-2 -mb-1">
-                <h3>Max number of guests</h3>
-                <input type="number" value={maxGuest} onChange={ev=>setMaxGuest(ev.target.value)}/>
+              <div className="grow-0 shrink">
+              <h2 className="text-xl">{place.title}</h2>
+              <p className="text-sm mt-2">{place.discription}</p>
               </div>
             </div>
-            <button className="primary my-4">Save</button>
-          </form>
+              </Link>
+          ))}
         </div>
-      )}
     </div>
   );
 }
