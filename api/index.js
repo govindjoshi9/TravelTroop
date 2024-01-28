@@ -132,7 +132,7 @@ app.post('/places', (req, res)=>{
   const { token } = req.cookies;
   const { 
     title, address, addedPhotos, discription,
-    parks, extraInfo, checkIn, checkOut,maxGuest,
+    parks, extraInfo, checkIn, checkOut,maxGuest,price,
   } = req.body; 
   jwt.verify(token, jwtSecret, {}, async (err, user) => {
     if (err) throw err;
