@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import BookingWidget from './BookingWidget';
 
 export default function PlacePage() {
     const { id } = useParams();
@@ -35,55 +36,43 @@ export default function PlacePage() {
             {displayPhotos.map((photo, index) => (
               <div key={index} className="h-80 overflow-hidden">
                 <img
-                  className="w-full h-full object-cover"
+                  className="w-full h-full cursor-pointer object-cover"
                   src={"http://localhost:8080/uploads/" + photo}
                   alt={`Image ${index + 1}`}
+                  onClick={()=> setShowMore(true)}
                 />
               </div>
             ))}
           </div>
           {placs.addedPhotos && placs.addedPhotos.length > 3 && (
             <button
-              className="absolute bottom-2 right-2 py-2 px-4 bg-white rounded-2xl shadow shadow-md shadow-gray-500"
+              className="absolute bottom-2 right-2 py-2 px-4 bg-white rounded-2xl shadow-gray-500"
               onClick={() => setShowMore(!showMore)}
             >
               {showMore ? "Show less photos" : "Show more photos"}
             </button>
           )}
         </div>
-        <div className="my-2">
-          <h2 className="font-semibold text-2xl">Description</h2>
-          {placs.discription}
-        </div>
-        <div className="grid grid-cols-2">
+        <div className="mt-8 mb-4 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]">
           <div>
+            <div className="my-4">
+              <h2 className="font-semibold text-2xl">Description</h2>
+              {placs.discription}
+            </div>
             Check-in : {placs.checkIn} <br />
             Check-out : {placs.checkOut} <br />
             Max number of guest: {placs.maxGuest}
           </div>
           <div>
-            <div className="bg-gray-50 shadow p-4 rounded-2xl">
-              <div className="text-xl text-center">
-                Price : ${placs.price} / per night
-              </div>
-              <div className="border rounded-2xl mt-4">
-                <div className="flex">
-                  <div className="py-3 px-4">
-                    <label>Check in:</label>
-                    <input type="date" />
-                  </div>
-                  <div className="px-3 py-4 border-l">
-                    <label>Check Out:</label>
-                    <input type="date" />
-                  </div>
-                </div>
-                  <div className="px-3 py-4 border-t">
-                                <label>No of  Guests:</label>
-                    <input type="number" value={1} />
-                </div>
-              </div>
-              <button className="primary mt-4">Book this place</button>
-            </div>
+            <BookingWidget placs={placs} />
+          </div>
+        </div>
+        <div className='bg-gray-50 -mx-8 px-8 py-8 border-t'>
+          <div>
+            <h2 className="font-semibold text-2xl">Extra Info</h2>
+          </div>
+          <div className="mb-4 mt-2 text-sm text-gray-700 leading-5">
+            {placs.extraInfo}
           </div>
         </div>
       </>
