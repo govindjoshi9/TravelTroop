@@ -15,7 +15,8 @@ const { resolve } = require("path");
 const { rejects } = require("assert");
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json()); 
+app.use(express.static('dist'))
 app.use("/uploads", express.static(__dirname + "/uploads"));
 const PORT = process.env.PORT || 8080;
 app.use(
